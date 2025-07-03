@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchStore } from '@/store/useSearchStore';
+import { useSearchStore } from '../store/useSearchStore';
 
 export default function SearchBox() {
   const keyword = useSearchStore((state) => state.keyword);
