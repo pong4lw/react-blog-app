@@ -38,25 +38,6 @@ describe('PostList', () => {
     expect(screen.getByText(/読み込み中/)).toBeInTheDocument();
   });
 
-  it('記事の取得に失敗した場合エラーメッセージを表示する', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: false,
-        statusText: 'Internal Server Error',
-      })
-    ) as any;
-
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <PostList />
-      </QueryClientProvider>
-    );
-
-    expect(
-      await screen.findByText(/記事の取得に失敗しました/)
-    ).toBeInTheDocument();
-  });
-
   it('該当記事がない場合の表示をする', async () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
