@@ -1,36 +1,56 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchStore } from '@/store/useSearchStore';
 
 type Post = {
   slug: string;
   title: string;
-  date: string;
+  content: string;
+  category: string;
+  tags: string[];
 };
 
 export default function PostList() {
   const keyword = useSearchStore((state) => state.keyword.toLowerCase());
+  const selectedCategory = useSearchStore((state) => state.category);
+  const selectedTag = useSearchStore((state) => state.tag);
 
-  const { data, isLoading, error } = useQuery<Post[]>({
+  const { data, isLoading, error } = useQuery<Post[], Error>({
     queryKey: ['posts'],
-    queryFn: () => fetch('/api/posts').then((res) => res.json()),
+    queryFn: async () => {
+      const res = await fetch('/api/posts');
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.statusText}`);
+      return res.json();
+    },
+    retry: 1,
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading posts</p>;
+  const filteredPosts = useMemo(() => {
+    if (!data) return [];
+    return data.filter((post) => {
+      const keywordMatch =
+        post.title.toLowerCase().includes(keyword) ||
+        post.content.toLowerCase().includes(keyword);
+      const categoryMatch = selectedCategory ? post.category === selectedCategory : true;
+      const tagMatch = selectedTag ? post.tags.includes(selectedTag) : true;
+      return keywordMatch && categoryMatch && tagMatch;
+    });
+  }, [data, keyword, selectedCategory, selectedTag]);
 
-  const filteredPosts = data!.filter((post) =>
-    post.title.toLowerCase().includes(keyword)
-  );
-
+  if (isLoading) return <p className="text-gray-500">読み込み中...</p>;
+  if (error) return <p className="text-red-500">記事の読み込みに失敗しました: {error.message}</p>;
   if (filteredPosts.length === 0) return <p>該当する記事はありません。</p>;
 
   return (
-    <ul>
+    <ul className="space-y-4">
       {filteredPosts.map((post) => (
-        <li key={post.slug}>
-          <a href={`/posts/${post.slug}`}>{post.title}</a>
+        <li key={post.slug} className="border-b pb-2">
+          <a href={`/posts/${post.slug}`} className="text-blue-600 text-lg font-bold underline">
+            {post.title}
+          </a>
+          <p className="text-sm text-gray-600 mt-1">{post.content}</p>
         </li>
       ))}
     </ul>

@@ -1,11 +1,19 @@
 import { create } from 'zustand';
 
-type SearchStore = {
+type SearchState = {
   keyword: string;
-  setKeyword: (value: string) => void;
+  category: string;
+  tag: string;
+  setKeyword: (kw: string) => void;
+  setCategory: (cat: string) => void;
+  setTag: (tag: string) => void;
 };
 
-export const useSearchStore = create<SearchStore>((set) => ({
+export const useSearchStore = create<SearchState>((set) => ({
   keyword: '',
-  setKeyword: (value) => set({ keyword: value }),
+  category: '',
+  tag: '',
+  setKeyword: (kw) => set({ keyword: kw }),
+  setCategory: (cat) => set({ category: cat }),
+  setTag: (tag) => set({ tag }),
 }));

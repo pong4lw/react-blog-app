@@ -16,7 +16,7 @@ export default function Post({ postData }: Props) {
       <article>
         <h1 className="text-3xl font-bold mb-2">{postData.title}</h1>
         <div className="text-gray-500 text-sm mb-4">{postData.date}</div>
-        <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+        <div dangerouslySetInnerHTML={{ __html: postData.content }} />
       </article>
     </Layout>
   );
