@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchStore } from '@/store/useSearchStore';
+import { useState, useMemo } from 'react';
 
 type Post = {
   slug: string;
@@ -27,6 +27,17 @@ export default function PostList() {
     retry: 1,
   });
 
+  // ✅ useMemo は無条件で呼ばれるようにする
+  const categories = useMemo(
+    () => Array.from(new Set(data?.map((p) => p.category) ?? [])),
+    [data]
+  );
+
+  const tags = useMemo(
+    () => Array.from(new Set(data?.flatMap((p) => p.tags) ?? [])),
+    [data]
+  );
+
   const filteredPosts = useMemo(() => {
     if (!data) return [];
     return data.filter((post) => {
@@ -39,8 +50,9 @@ export default function PostList() {
     });
   }, [data, keyword, selectedCategory, selectedTag]);
 
+  // ✅ useMemo 呼び出しの後に return 分岐
   if (isLoading) return <p className="text-gray-500">読み込み中...</p>;
-  if (error) return <p className="text-red-500">記事の読み込みに失敗しました: {error.message}</p>;
+  if (error) return <p className="text-red-500">記事の取得に失敗しました: {error.message}</p>;
   if (filteredPosts.length === 0) return <p>該当する記事はありません。</p>;
 
   return (

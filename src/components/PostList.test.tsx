@@ -1,32 +1,32 @@
 import { render, screen } from '@testing-library/react';
-import { PostList } from './PostList';
+import PostList from './PostList';
 import { useSearchStore } from '@/store/useSearchStore';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// QueryClientをテストごとに生成
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
-      queries: {
-        retry: false,
-      },
+      queries: { retry: false },
     },
   });
 
-// useSearchStoreをjest.mockでモック化
 jest.mock('@/store/useSearchStore', () => ({
   useSearchStore: jest.fn(),
 }));
 
 describe('PostList', () => {
-  // テストごとにfetchのモックをリセット
   beforeEach(() => {
     jest.clearAllMocks();
-    (useSearchStore as jest.Mock).mockReturnValue('');
+    (useSearchStore as jest.Mock).mockImplementation((selector) =>
+      selector({
+        keyword: '',
+        category: null,
+        tag: null,
+      })
+    );
   });
 
   it('ローディング状態を表示する', () => {
-    // fetchが永遠に解決しない＝ローディング状態
     global.fetch = jest.fn(() => new Promise(() => {})) as any;
 
     render(
@@ -62,11 +62,25 @@ describe('PostList', () => {
       Promise.resolve({
         ok: true,
         json: () =>
-          Promise.resolve([{ slug: 'test-1', title: 'React入門', content: '基本的な内容' }]),
+          Promise.resolve([
+            {
+              slug: 'test-1',
+              title: 'React入門',
+              content: '基本的な内容',
+              category: '技術',
+              tags: ['React'],
+            },
+          ]),
       })
     ) as any;
 
-    (useSearchStore as jest.Mock).mockReturnValue('Vue'); // 検索語が不一致
+    (useSearchStore as jest.Mock).mockImplementation((selector) =>
+      selector({
+        keyword: 'Vue',
+        category: null,
+        tag: null,
+      })
+    );
 
     render(
       <QueryClientProvider client={createTestQueryClient()}>
@@ -74,7 +88,9 @@ describe('PostList', () => {
       </QueryClientProvider>
     );
 
-    expect(await screen.findByText(/該当する記事はありません/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/該当する記事はありません/)
+    ).toBeInTheDocument();
   });
 
   it('フィルタリングされた記事を表示する', async () => {
@@ -83,13 +99,31 @@ describe('PostList', () => {
         ok: true,
         json: () =>
           Promise.resolve([
-            { slug: 'react', title: 'React入門', content: '基本的な内容' },
-            { slug: 'vue', title: 'Vue入門', content: 'Vueの基本' },
+            {
+              slug: 'react',
+              title: 'React入門',
+              content: '基本的な内容',
+              category: '技術',
+              tags: ['React'],
+            },
+            {
+              slug: 'vue',
+              title: 'Vue入門',
+              content: 'Vueの基本',
+              category: '技術',
+              tags: ['Vue'],
+            },
           ]),
       })
     ) as any;
 
-    (useSearchStore as jest.Mock).mockReturnValue('React');
+    (useSearchStore as jest.Mock).mockImplementation((selector) =>
+      selector({
+        keyword: 'React',
+        category: null,
+        tag: null,
+      })
+    );
 
     render(
       <QueryClientProvider client={createTestQueryClient()}>
