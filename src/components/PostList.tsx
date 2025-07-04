@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSearchStore } from '@/store/useSearchStore';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
 type Post = {
   slug: string;
@@ -26,17 +26,6 @@ export default function PostList() {
     },
     retry: 1,
   });
-
-  // ✅ useMemo は無条件で呼ばれるようにする
-  const categories = useMemo(
-    () => Array.from(new Set(data?.map((p) => p.category) ?? [])),
-    [data]
-  );
-
-  const tags = useMemo(
-    () => Array.from(new Set(data?.flatMap((p) => p.tags) ?? [])),
-    [data]
-  );
 
   const filteredPosts = useMemo(() => {
     if (!data) return [];

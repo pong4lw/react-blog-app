@@ -9,7 +9,6 @@ import SearchBox from '@/components/SearchBox';
 import CategorySelect from '@/components/CategorySelect';
 import TagSelect from '@/components/TagSelect';
 import FilteredPostList from '@/components/FilteredPostList';
-import PostList from '@/components/PostList';  // 適切なパスに調整してください
 
 // 型は関数の外で宣言
 type Post = {

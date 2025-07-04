@@ -27,7 +27,7 @@ describe('PostList', () => {
   });
 
   it('ローディング状態を表示する', () => {
-    global.fetch = jest.fn(() => new Promise(() => {})) as any;
+    global.fetch = jest.fn(() => new Promise(() => {})) as jest.Mock;
 
     render(
       <QueryClientProvider client={createTestQueryClient()}>
@@ -96,7 +96,7 @@ describe('PostList', () => {
             },
           ]),
       })
-    ) as any;
+    ) as jest.Mock;
 
     (useSearchStore as jest.Mock).mockImplementation((selector) =>
       selector({

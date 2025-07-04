@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSortedPostsData } from '@/lib/posts';
 
-export default function handler(req, res) {
+export default function handler(  
+  _req: NextApiRequest,
+  res: NextApiResponse
+  ) {
   const posts = getSortedPostsData(); // ← この中で content も含めるようにする
   // contentHtml（HTML）ではなくプレーンテキストを使いたいなら
   const plainPosts = posts.map((post) => ({
