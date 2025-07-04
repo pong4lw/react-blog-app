@@ -6,9 +6,9 @@ import { useSearchStore } from '@/store/useSearchStore';
 import { useQuery } from '@tanstack/react-query';
 
 import SearchBox from '@/components/SearchBox';
-import CategorySelect from '@/components/CategorySelect';
-import TagSelect from '@/components/TagSelect';
 import FilteredPostList from '@/components/FilteredPostList';
+import CategorySelect from './CategorySelect';
+import TagSelect from './TagSelect';
 
 // 型は関数の外で宣言
 type Post = {
@@ -49,7 +49,8 @@ export default function Layout({ children }: Props) {
         post.title.toLowerCase().includes(lowerKeyword) ||
         post.content.toLowerCase().includes(lowerKeyword);
       const matchCategory = category ? post.category === category : true;
-      const matchTag = tag ? post.tags.includes(tag) : true;
+      const matchTag = tag ? (post.tags ?? []).includes(tag) : true;
+
       return matchKeyword && matchCategory && matchTag;
     });
   }, [data, keyword, category, tag]);

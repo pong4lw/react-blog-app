@@ -1,7 +1,8 @@
 // ArticleCard.tsx
-import { Article } from './types';
+import { Article } from './type';
 
 export default function ArticleCard({ article }: { article: Article }) {
+console.log(article);
   return (
     <div className="p-4 border rounded mb-3">
       <h2 className="text-xl font-bold">{article.title}</h2>

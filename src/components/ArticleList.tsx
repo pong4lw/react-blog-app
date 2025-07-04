@@ -1,7 +1,7 @@
 // ArticleList.tsx
 import { useState, useMemo } from 'react';
-import { articles } from './dummyData';
-import { ArticleCard } from './ArticleCard';
+import { articles } from '../pages/api/dummyData';
+import ArticleCard from './ArticleCard';
 
 export default function ArticleList() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
