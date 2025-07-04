@@ -4,8 +4,13 @@ import SearchBox from './SearchBox';
 
 const setKeywordMock = jest.fn();
 
+type SearchState = {
+  keyword: string;
+  setKeyword: string | null;
+};
+
 jest.mock('@/store/useSearchStore', () => ({
-  useSearchStore: (selector: any) =>
+(useSearchStore as jest.Mock).mockImplementation((selector: (state: SearchState) => any) =>
     selector({
       keyword: '',
       setKeyword: setKeywordMock,

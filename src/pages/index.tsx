@@ -1,7 +1,6 @@
 import { GetStaticProps } from 'next';
 import Layout from '../components/Layout';
 import { getSortedPostsData, PostMeta } from '../lib/posts';
-import Link from 'next/link';
 import SearchBox from '../components/SearchBox';
 import PostList from '../components/PostList';
 

@@ -39,7 +39,7 @@ describe('PostList', () => {
   });
 
   it('該当記事がない場合の表示をする', async () => {
-    global.fetch = jest.fn(() =>
+    global.fetch = jest.fn((): Promise<Response> =>
       Promise.resolve({
         ok: true,
         json: () =>
@@ -53,7 +53,7 @@ describe('PostList', () => {
             },
           ]),
       })
-    ) as any;
+    } as Response)
 
     (useSearchStore as jest.Mock).mockImplementation((selector) =>
       selector({
