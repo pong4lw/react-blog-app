@@ -39,7 +39,7 @@ describe('PostList', () => {
   });
 
   it('該当記事がない場合の表示をする', async () => {
-    global.fetch = jest.fn((): Promise<Response> =>
+    global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
         json: () =>
@@ -52,9 +52,9 @@ describe('PostList', () => {
               tags: ['React'],
             },
           ]),
-      })
-    } as Response)
-
+      } as Response)
+    );
+    
     (useSearchStore as jest.Mock).mockImplementation((selector) =>
       selector({
         keyword: 'Vue',

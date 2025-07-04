@@ -6,16 +6,23 @@ const setKeywordMock = jest.fn();
 
 type SearchState = {
   keyword: string;
-  setKeyword: string | null;
+  setKeyword: (value: string) => void;
 };
 
+// モックの定義をグローバルスコープで正しく行う
 jest.mock('@/store/useSearchStore', () => ({
-(useSearchStore as jest.Mock).mockImplementation((selector: (state: SearchState) => any) =>
-    selector({
-      keyword: '',
-      setKeyword: setKeywordMock,
-    }),
+  useSearchStore: jest.fn(),
 }));
+
+// useSearchStore を明確にキャストしてからモック実装
+import { useSearchStore } from '@/store/useSearchStore';
+
+(useSearchStore as jest.Mock).mockImplementation((selector: (state: SearchState) => any) =>
+  selector({
+    keyword: '',
+    setKeyword: setKeywordMock,
+  })
+);
 
 describe('SearchBox コンポーネント', () => {
   beforeEach(() => {
