@@ -10,6 +10,9 @@ import FilteredPostList from '@/components/FilteredPostList';
 import CategorySelect from './CategorySelect';
 import TagSelect from './TagSelect';
 
+import NewPostForm from './NewPostForm'; 
+
+
 // 型は関数の外で宣言
 type Post = {
   slug: string;
@@ -24,14 +27,13 @@ type Props = {
   children: React.ReactNode;
 };
 
+
 export default function Layout({ children }: Props) {
-  // Zustandの検索状態を取得
   const keyword = useSearchStore((state) => state.keyword);
   const category = useSearchStore((state) => state.category) ?? '';
   const tag = useSearchStore((state) => state.tag) ?? '';
 
-  // 投稿データを取得
-  const { data, isLoading, error } = useQuery<Post[], Error>({
+  const { data, isLoading, error, refetch } = useQuery<Post[], Error>({
     queryKey: ['posts'],
     queryFn: async () => {
       const res = await fetch('/api/posts');
@@ -79,6 +81,7 @@ export default function Layout({ children }: Props) {
           <CategorySelect categories={categories} />
           <TagSelect tags={tags} />
           <FilteredPostList posts={filteredPosts} isLoading={isLoading} error={error} />
+          <NewPostForm onSuccess={refetch} categories={categories} tags={tags} />
         </aside>
       </main>
 

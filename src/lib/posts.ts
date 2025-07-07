@@ -16,6 +16,8 @@ export type PostMeta = {
   date: string;
   description?: string;
   contentText?: string; // 検索用
+  category?: string;
+  tags?: string[];
 };
 
 export type PostDetail = {
@@ -24,6 +26,8 @@ export type PostDetail = {
   date: string;
   contentHtml: string;
   contentText: string; // 検索用
+  category?: string;
+  tags?: string[];
 };
 
 export function getSortedPostsData(): PostMeta[] {
