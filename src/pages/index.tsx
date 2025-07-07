@@ -1,18 +1,12 @@
-import { GetStaticProps } from 'next';
 import Layout from '../components/Layout';
-import { getSortedPostsData, PostMeta } from '../lib/posts';
 import SearchBox from '../components/SearchBox';
 import PostList from '../components/PostList';
 
-type Props = {
-  allPosts: PostMeta[];
-};
-
-export default function Home({ allPosts }: Props) {
+export default function Home() {
   return (
     <Layout>
       <SearchBox />
-        <PostList />
+      <PostList />
     </Layout>
   );
 }

@@ -18,15 +18,14 @@ jest.mock('@/store/useSearchStore', () => ({
 // モックをインポート（上書き可能にする）
 import { useSearchStore } from '@/store/useSearchStore';
 
-// モック関数を型安全に適用（as unknown で中間キャスト）
 beforeAll(() => {
-  (useSearchStore as unknown as jest.Mock).mockImplementation(
-    (selector: (state: SearchState) => any) =>
-      selector({
-        keyword: '',
-        setKeyword: setKeywordMock,
-      })
-  );
+  (useSearchStore as unknown as jest.Mock).mockImplementation = <T,>(
+    selector: (state: SearchState) => T
+  ): T =>
+    selector({
+      keyword: '',
+      setKeyword: setKeywordMock,
+    });
 });
 
 describe('SearchBox コンポーネント', () => {
