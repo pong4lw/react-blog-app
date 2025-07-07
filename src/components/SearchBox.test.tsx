@@ -1,28 +1,33 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import SearchBox from './SearchBox';
 
-// モック関数
+// Zustand ストアのモック関数
 const setKeywordMock = jest.fn();
 
-// Zustandのstoreの型定義
+// ストアの型
 type SearchState = {
   keyword: string;
   setKeyword: (value: string) => void;
 };
 
-// useSearchStore を jest.mock で定義
+// useSearchStore をモック
 jest.mock('@/store/useSearchStore', () => ({
   useSearchStore: jest.fn(),
 }));
 
+// モックをインポート（上書き可能にする）
 import { useSearchStore } from '@/store/useSearchStore';
 
-// 方法②: ジェネリックで型安全な mockImplementation を定義
-(useSearchStore as jest.Mock).mockImplementation = <T,>(selector: (state: SearchState) => T): T =>
-  selector({
-    keyword: '',
-    setKeyword: setKeywordMock,
-  });
+// モック関数を型安全に適用（as unknown で中間キャスト）
+beforeAll(() => {
+  (useSearchStore as unknown as jest.Mock).mockImplementation(
+    (selector: (state: SearchState) => any) =>
+      selector({
+        keyword: '',
+        setKeyword: setKeywordMock,
+      })
+  );
+});
 
 describe('SearchBox コンポーネント', () => {
   beforeEach(() => {

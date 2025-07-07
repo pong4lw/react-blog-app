@@ -12,16 +12,7 @@ export default function Home({ allPosts }: Props) {
   return (
     <Layout>
       <SearchBox />
-      <PostList posts={allPosts} />
+        <PostList />
     </Layout>
   );
 }
-
-export const getStaticProps: GetStaticProps = async () => {
-  const allPosts = getSortedPostsData();
-  return {
-    props: {
-      allPosts,
-    },
-  };
-};

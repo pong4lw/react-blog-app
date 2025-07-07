@@ -2,21 +2,28 @@
 
 import { useSearchStore } from '@/store/useSearchStore';
 
-const tags = ['', 'React', 'Next.js', 'JavaScript'];
+type TagSelectProps = {
+  tags: string[];
+};
 
-export default function TagSelect() {
-  const tag = useSearchStore((state) => state.tag);
+export default function TagSelect({ tags }: TagSelectProps) {
+  const selectedTag = useSearchStore((state) => state.tag);
   const setTag = useSearchStore((state) => state.setTag);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setTag(e.target.value); // null を使わない
+  };
 
   return (
     <select
-      value={tag}
-      onChange={(e) => setTag(e.target.value)}
+      value={selectedTag ?? ''}
+      onChange={handleChange}
       className="p-2 border rounded mb-4"
     >
-      {tags.map((t) => (
-        <option key={t} value={t}>
-          {t === '' ? 'すべてのタグ' : t}
+      <option value="">すべてのタグ</option>
+      {tags.map((tag) => (
+        <option key={`tag-${tag}`} value={tag}>
+          {tag}
         </option>
       ))}
     </select>

@@ -1,7 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import PostList from './PostList';
-import { useSearchStore } from '@/store/useSearchStore';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useSearchStore } from '@/store/useSearchStore';
+
+// Zustandのstoreをjestでモック化
+jest.mock('@/store/useSearchStore');
+
+const mockedUseSearchStore = useSearchStore as unknown as jest.Mock;
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -10,14 +15,12 @@ const createTestQueryClient = () =>
     },
   });
 
-jest.mock('@/store/useSearchStore', () => ({
-  useSearchStore: jest.fn(),
-}));
-
 describe('PostList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useSearchStore as jest.Mock).mockImplementation((selector) =>
+
+    // デフォルトの状態（初期キーワード・カテゴリ・タグ）
+    mockedUseSearchStore.mockImplementation((selector) =>
       selector({
         keyword: '',
         category: null,
@@ -52,12 +55,12 @@ describe('PostList', () => {
               tags: ['React'],
             },
           ]),
-      } as Response)
-    );
-    
-    (useSearchStore as jest.Mock).mockImplementation((selector) =>
+      })
+    ) as jest.Mock;
+
+    mockedUseSearchStore.mockImplementation((selector) =>
       selector({
-        keyword: 'Vue',
+        keyword: 'Vue', // 検索にヒットしない
         category: null,
         tag: null,
       })
@@ -69,9 +72,7 @@ describe('PostList', () => {
       </QueryClientProvider>
     );
 
-    expect(
-      await screen.findByText(/該当する記事はありません/)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/該当する記事はありません/)).toBeInTheDocument();
   });
 
   it('フィルタリングされた記事を表示する', async () => {
@@ -98,7 +99,7 @@ describe('PostList', () => {
       })
     ) as jest.Mock;
 
-    (useSearchStore as jest.Mock).mockImplementation((selector) =>
+    mockedUseSearchStore.mockImplementation((selector) =>
       selector({
         keyword: 'React',
         category: null,

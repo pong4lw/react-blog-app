@@ -1,5 +1,5 @@
 // dummyData.ts
-import { Article } from './types';
+import { Article } from './type';
 
 export const articles: Article[] = [
   {
